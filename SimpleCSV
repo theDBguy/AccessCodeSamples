@@ -1,0 +1,29 @@
+Public Function SimpleCSV(strSQL As String, _
+			Optional strDelim As String = ",") As String
+'Returns a comma delimited string of all the records in the SELECT SQL statement
+'Source: http://accessmvp.com/thedbguy
+'v1.0 - 8/20/2013
+
+Dim db As DAO.Database
+Dim rs As DAO.Recordset
+Dim strCSV As String
+
+Set db = CurrentDb()
+Set rs = db.OpenRecordset(strSQL, dbOpenSnapshot)
+
+'Concatenate the first (and should be the only one) field from the SQL statement
+With rs
+	Do While Not .EOF
+		strCSV = strCSV & strDelim & .Fields(0)
+		.MoveNext
+	Loop
+	.Close
+End With
+
+'Remove the leading delimiter and return the result
+SimpleCSV = Mid$(strCSV, Len(strDelim) + 1)
+
+Set rs = Nothing
+Set db = Nothing
+
+End Function
